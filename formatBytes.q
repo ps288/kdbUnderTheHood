@@ -27,6 +27,11 @@ getCountMemLocation:`returnBytesX 2:(`getCountMemLocation;1);
 
 getSymMemLocation:`returnBytesX 2:(`getSymMemLocation;1);
 
+getByteMemLocation:`returnBytesX 2:(`getByteMemLocation;1);
+
+getNBytesMemLocation:`returnBytesX 2:(`getNBytesMemLocation;2);
+
+
 /////////////
 //q functions
 /////////////
@@ -58,7 +63,11 @@ cutInds:{[t;n]
   :r,s;
  };
 
+TWOSC: -128 64 32 16 8 4 2 1;
+twos:{sum TWOSC * 0b vs first x};
+svtwos:sv[0x0;] reverse ::;
 
 //formatting functions
 formatBytes:{[x] cutInds[type x;getCount x] cut rbx x};
+formatInts:{((twos;svtwos) 1<count each x)@'x};
 formatBytesMem:{[x] cutInds[getTypeMemLocation x;getCountMemLocation x] cut getMemLocation x};

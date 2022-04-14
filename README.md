@@ -13,3 +13,10 @@ To compile the C library into a shared object run the following:
 ```bash
 gcc -shared -fPIC returnBytesX.c -o returnBytesX.so
 ```
+
+# To Run
+Simply load the q file to get all the C functions dynamically loaded and some formatting functions.
+
+```q
+\l formatBytes.q
+```

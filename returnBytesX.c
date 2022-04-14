@@ -105,6 +105,7 @@ K getCountMemLocation(K x)
         return kj((*kK(x))->n);
 }
 
+//directly get the symbol at given memory location
 K getSymMemLocation(K x)
 {
         if(4!=xt) return krr("type");
@@ -112,9 +113,35 @@ K getSymMemLocation(K x)
         return ks(*(S*) kG(x));
 }
 
+//prints bytes at given location until null terminator is hit
+K getByteMemLocation(K x)
+{
+        if(4!=xt) return krr("type");
+        if(8!=xn) return krr("length");
+
+        char* p = (char*) *(K*) kG(x);
+        int len = strlen(p);
+
+        return return_bytes(*(K*) kG(x), len);
+}
+
+//print y (y->j) bytes starting at memory location x
+K getNBytesMemLocation(K x, K y)
+{
+        if(4!=xt) return krr("type");
+        if(8!=xn) return krr("length");
+
+        if(-7!=y->t) return krr("type");
+
+        return return_bytes(*(K*) kG(x), y->j);
+}
+
+
+
 
 
 //rbx:`returnBytesX 2:(`returnBytesX;1)
 //getMemLocation:`returnBytesX 2:(`getMemLocation;1)
 //getSymMemLocation:`returnBytesX 2:(`getSymMemLocation;1);
-
+//getByteMemLocation:`returnBytesX 2:(`getByteMemLocation;1);
+//getNBytesMemLocation:`returnBytesX 2:(`getNBytesMemLocation;2);
