@@ -62,7 +62,7 @@ We would like to inspect our kdb+ objects as a list of bytes and compare to the 
 A Naive First attempt would be to use -8!:
 
 
-```bash
+```q
 q)-8!7j
 0x0100000011000000f90700000000000000
 q)
@@ -74,7 +74,7 @@ This isn't quite right. -8! is used for serializing for IPC. Although for atoms 
 
 We use the C API to read the literal bytes representing the k0 struct for the underlying object and put these bytes into a kdb+ byte list. We call this function rbx - short for return bytes. We use the 2: dynamic load capability to load this function into kdb+.
 
-```bash
+```q
 q)rbx 7j
 0x0080f900010000000700000000000000
 q)
@@ -86,7 +86,7 @@ This is correct, however not that clear.
 
 Lets write a function in q to split the result of rbx into the corresponding members of the k0 struct. We'll call this function formatBytes. We add some comments to the output below to help see the values.
 
-```bash
+```q
 q)formatBytes 7j
 ,0x00    <---- m - for internal use (size: 1 byte)
 ,0x80    <---- a - for internal use (size: 1 byte)
@@ -101,7 +101,7 @@ Which is why the value for r here differs to the result of rbx
 
 Finally we have another formatting function to convert bytes to an integer:
 
-```bash
+```q
 q)formatInts formatBytes 7j
 0        <-- m
 -128     <-- a
@@ -115,7 +115,7 @@ A couple of things to note when doing this conversion from bytes to ints.
 
 First, generally we can use sv to convert a list of 2/4/8 bytes to shorts/ints/longs https://code.kx.com/q/ref/sv/#bytes-to-integer . This doesn't work for single byte values. It's tempting to simply cast to a short/int/long - this works for unsigned values. But in m,a & t case we actually have signed one byte numbers so this doesn't work. Thus we must manually do the conversion from two's complement:
 
-```bash
+```q
 q)"j"$0xf9   //incorrect
 249
 q)
@@ -127,7 +127,7 @@ q)twosc 0xf9
 
 Second, my machine, and indeed most machines, uses little endian format however kdb+ when encoding/decoding assumes big endianess so we have to reverse the byte list before using sv.
 
-```bash
+```q
 q)0x0 sv 0x0700000000000000
 504403158265495552
 q)0x0 sv reverse 0x0700000000000000
